@@ -1,0 +1,128 @@
+---
+title: "Final Project: Write-Up"
+subtitle: "Data and Programming for Public Policy II - R"
+author: "Nolan Villasmil"
+date: "2024-12-08"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Background
+
+Despite public concern over climate change, global greenhouse gas emissions
+(GHG) have shown sign of no abatement. These reached a new record in 2023. While
+the focus has mostly been on carbon dioxide, all GHG have shown a marked
+increase - including methane. Methane is particularly concerning as it is 80
+times more powerful than carbon dioxide over a 20-year period.
+
+The energy sector is the main source of GHG emissions produced by humans. In
+particular, 25% of anthropogenic methane emissions come from venting, leakage
+and flaring in the oil and gas industry. These industry processes consist of 
+the release and burning of associated gas during oil processing. While flaring
+is to some extent inevitable for safety reasons, gas continues to be wasted
+across the world due to limited economic incentives, infrastructure or poor
+regulation. In addition to economic losses negative environmental impact, gas 
+flaring is especially associated with worsening health outcomes as a result of
+poor air quality.
+
+Oil output in the United States has seen considerable growth over the last two
+decades. According to the U.S. Energy Information Administration (EIA), 
+production rose from 8.7 million barrels per day (mbpd) in 2003 to 
+21.9 mbpd in 2023. This has contributed to the positioning of the United States
+as the top oil producer in 2023, concentrating nearly 21.5% of global output.
+At the same time, the United States has also become one of the top flaring 
+nations in the world, together with Russia and Iraq.
+
+# Research question
+
+In light of the recent transformation of the oil and gas industry in the United 
+States, there is merit in exploring how its associated levels of gas flaring
+have interacted with air quality. This research presents an overview of the
+evolution of oil output, gas flaring, and air quality in the United States from
+2012 to 2023. Using more granular data, it intends to give an account of the
+differential spatial relationship by focusing on smaller administrative 
+geographical units such as states and counties.
+
+# Coding approach
+
+This coding project largely relied on three (3) major sources: the Annual Gas
+Flared Volume, by the Earth Observation Group (EOG)/Colorado School Mines; the 
+Air Quality Index (AQI), by the U.S. Environmental Protection Agency (EPA); and
+the Air Quality Life Index (AQLI), by the Energy Policy Institute at the 
+University of Chicago (EPIC). 
+
+The Annual Gas Flared Volume data by the EOG comprised information about every
+gas flare site detected globally through satellite monitoring, including country
+of origin, year, estimated volumes of flared gas (expressed in billion cubic 
+meters), longitude and latitude. This initial data was saved in multiple Excel
+files which divided the data on upstream and downstream. Given the focus on oil
+production, upstream data from the United States were extracted and merged into
+a single dataframe. In addition to cleaning, this combined dataframe was merged
+with United States geographic information in order to identify the spatial
+and administrative distribution of flaring sites across the country.
+
+The Air Quality Index (AQI) by the EPA comprised a time series of index 
+measurements for each reporting county in the United States. This included the 
+number of days with different levels of air quality, as well as the total 
+number of days in the year for which AQI observations were recorded. This .csv
+file was cleaned and matched with United States and geographical information. 
+After doing this, it was clear that the county-level coverage was low, as only
+large statistically metropolitan areas reported to the EPA. While helpful to 
+understand county-level dynamics, these data omitted a large number of gas 
+flaring counties (especially in Texas, the state with the highest number of
+flaring sites, with barely 17% of coverage). State-level data was not
+available.
+
+The Air Quality Life Index (AQLI) by EPIC comprised a time series containing
+measurements of population-weighted atmospheric particulate pollution 
+(particulate mater (PM) 2.5 micrograms per cubic meter or less), which is the 
+most serious measure of air pollution, alongside estimations of additional days
+of live saved if WHO and U.S. air quality standards were met. This information 
+was available for all U.S. states. The dataset was cleaned and merged with 
+United States geographic information.
+
+In addition, national crude oil field production data from the U.S. Energy 
+Information Administration (EIA) and aggregated gas flaring volumes data from 
+the Global Gas Flaring Reduction Partnership were used with descriptive 
+purposes to understand the evolution of these indicators in the United States.
+
+Lastly, a press release summarizing a scientific article by Tran et al. (2024) 
+was retrieved using web scraping for sentiment analysis. It was not possible to
+obtain news from local outlets due to paywall barriers. Similarly, it was not
+possible to conduct sentiment analysis for the scientific article due to 
+restrictions on the publisher's webpage. Content was tokenized by word and 
+sentence, and analysis was produced using the `sentiment` function as well as 
+the AFINN, NRC and Bing lexicons.
+
+# Results
+
+Using a dummy variable for the existence of a gas flaring site as the only 
+explanatory variable in a linear OLS regression, a positive and statistically 
+significant (at the 5% significance level) relationship was found. Having gas 
+flaring is associated with an increase of 0.4 micrograms per cubic meter of PM 
+2.5. With an R-squared of 0.021, this model has low explanatory power. 
+
+With a similar approach but controlling for year- and state-fixed effects, the
+existence of flaring in a state is associated with an increase of 0.15 
+micrograms per cubic meter of PM 2.5. This is not statistically significant at
+the 10% confidence level.
+
+Two additional regressions using these approaches were run for the number of 
+flaring sites in each state. These were negative and not statistically 
+significant. While counterintuitive, this is an indication of the underlying
+data issues mentioned previously and the need for more granular data for a
+better understanding. Accessing county-level data and adding relevant controls
+as sources of air pollution is a next research step for further inspection.
+
+Text analysis results indicate mostly a positive sentiment of the press 
+release. This is consistent for word-based analysis using AFINN and NRC, as well
+as sentence-based analysis. However, using the Bing lexicon indicates that 
+sentiment is mostly negative, which would be consistent at face value with the
+conclusions of the report. This might be a suggestion of the change in tone of 
+the press release, emphasizing the opportunities for collaboration. Examining
+a wider sample of documents, particularly news reports from top flaring states
+such as Texas, would be another step to be further explored in research about
+public perceptions of gas flaring.
